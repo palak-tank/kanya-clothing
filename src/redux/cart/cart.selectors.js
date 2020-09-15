@@ -1,15 +1,20 @@
-import { createSelectors } from "reselect";
+import { createSelector } from "reselect";
 
 //Input selector, uses state and return slice of it
-const selectCart = state => state.cart;
+const selectCart = (state) => state.cart;
 
-//Memoi selector
-export const selectCartItems = createSelectors(
+//Memoize selector
+export const selectCartItems = createSelector(
   [selectCart],
   (cart) => cart.cartItems
 );
 
-export const selectCartItemsCount = createSelectors(
+export const selectCartHidden = createSelector(
+  [selectCart],
+  (cart) => cart.hidden
+);
+
+export const selectCartItemsCount = createSelector(
   [selectCartItems],
   (cartItems) =>
     cartItems.reduce(
@@ -17,4 +22,12 @@ export const selectCartItemsCount = createSelectors(
         accumalatedQuantity + cartItem.quantity,
       0
     )
+);
+
+export const selectCartTotal = createSelector([selectCartItems], (cartItems) =>
+  cartItems.reduce(
+    (accumalatedQuantity, cartItems) =>
+      accumalatedQuantity + cartItems.quantity * cartItems.price,
+    0
+  )
 );

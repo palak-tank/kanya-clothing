@@ -1,9 +1,12 @@
 import React from "react";
 import HomePage from "./component.pages/homepage/homepage.component";
 import ShopPage from "./component.pages/shop/shop.component";
+import CheckoutPage from "./component.pages/checkout/checkout.component";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { setCurrentUser } from "./redux/user/user.actions";
+import { createStructuredSelector } from "reselect";
+import { selectCurrentUser } from "./redux/user/user.selectors";
 import Header from "./components/header/header.component";
 import SignInAndSignUp from "./component.pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import "./App.css";
@@ -23,12 +26,10 @@ class App extends React.Component {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
         userRef.onSnapshot((snapShot) => {
-          setCurrentUser(
-            {
-                id: snapShot.id,
-                ...snapShot.data()
-            }
-          );
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
+          });
         });
       }
       setCurrentUser(userAuth);
@@ -45,6 +46,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={HomePage}></Route>
           <Route path="/shop" component={ShopPage}></Route>
+          <Route exact path="/checkout" component={CheckoutPage}></Route>
           <Route
             exact
             path="/signin"
@@ -58,15 +60,12 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user && user.currentUser ? user.currentUser : {}
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
