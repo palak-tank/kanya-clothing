@@ -8,11 +8,6 @@ import Checkout from "../../component.pages/checkout/checkout.component";
 import CartItem from "../cart-item/cart-item.component";
 import "./card-dropdown.style.scss";
 
-const goTo = () => {
-  alert("clicked");
-  // this.props.history.push("/checkout");
-};
-
 const CartDropdown = ({ cartItems, history, dispatch }) => (
   <div className="cart-dropdown">
     <div className="cart-items">
@@ -35,8 +30,8 @@ const CartDropdown = ({ cartItems, history, dispatch }) => (
   </div>
 );
 
-const mapStateToProops = (state) => ({
+const mapStateToProps = (state) => ({
   cartItems: selectCartItems(state),
 });
 
-export default withRouter(connect(mapStateToProops)(CartDropdown));
+export default withRouter(connect(mapStateToProps)(CartDropdown));
